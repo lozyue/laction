@@ -13,15 +13,15 @@ export function InitManager(Laction){
    */
   Laction.prototype.registerHook = function (...hooks) {
     const iteratAdd = (proper)=>{
-      if(!proper.name){
-        console.warn("[Laction]: The name of hook for register is essential!");
+      if(!proper.name || !proper.actions){
+        console.warn("[Laction]: The property 'name'and the 'actions' for hook register is essential!");
         return false;
       }
       // override if existed.
       this.hooks[proper.name] = {
         level: proper.level || NORMAL, // 钩子等级
         once: proper.once, // 周期节流
-        debounce: false, // 周期防抖.
+        debounce: proper.debounce || false, // 周期防抖.
         preMsgLoop: proper.preMsgLoop,
         postMsgLoop: proper.postMsgLoop,
         actions: is_Array(proper.actions) ? proper.actions : [proper.actions], // hookAction or hookActions自动结构
@@ -48,7 +48,7 @@ export function InitManager(Laction){
     const test = this.hooks[hookName];
     if(!test) return false;
 
-    Laction.DEBUG && console.log(`[Laction]: Added an action into ${hookName}`, hookActions);
+    this.lactionLog(`[Laction]: Added an action into ${hookName}`, hookActions);
     test.actions = test.actions.concat(hookActions);
     return true;
   };
@@ -68,7 +68,7 @@ export function InitManager(Laction){
     if(find>-1){
       test.actions.splice(find,1);
     }
-    Laction.DEBUG && console.log(`[Laction]: Removed an action in ${hookName}`, handle);
+    this.lactionLog(`[Laction]: Removed an action in ${hookName}`, handle);
     return true;
   }
 

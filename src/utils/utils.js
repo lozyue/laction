@@ -6,6 +6,7 @@
 
 export const isLightBuild = false;
 
+export const is_Defined = (v) => (v !== undefined && v !== null);
 export const is_String = (str) => ((typeof str === 'string') && str.constructor == String);
 export const is_Array = (obj) => (Array.isArray && Array.isArray(obj) || (typeof obj === 'object') && obj.constructor == Array);
 

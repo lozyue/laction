@@ -19,27 +19,10 @@ export function InitController(Laction){
       driver = window.setTimeout;
       cancelDriver = window.clearTimeout;
       Action = ()=>{
-        // console.log(this.currentOrbit);
-        // 多轨道消息处理系统
-        
-        // 使用 for 循环为同步注入模式，currentOrbit总是会保留在值10，改为异步回调执行为佳
-        /* for (this.currentOrbit = 0; this.currentOrbit < this.$settings.orbitNumber; this.currentOrbit++) {
-
-          // 在不同间隔时间 取模调用对应轨道
-          if (this.orbitCircle % (this.currentOrbit+1) === 0){
-
-            DEBUG && console.log("this.orbitCircle , this.currentOrbit, this.messageOrbits[i]:", this.orbitCircle , this.currentOrbit, this.messageOrbits[this.currentOrbit]);
-            // 考虑在这里加入一个轨道分时？？？
-            console.log(this.currentOrbit)
-            this.messageOrbits[this.currentOrbit] = this.everyAction(this.messageOrbits[this.currentOrbit] );
-          }
-        } */
-
         // 轨道 id 处理供回调
-        if(this.currentOrbit++, this.currentOrbit<this.$settings.orbitNumber){
+        if(this.currentOrbit++, this.currentOrbit<this.messageOrbits.length){
 
           if(this.orbitCircle % (this.currentOrbit+1) === 0){
-            // this.messageOrbits[this.currentOrbit] = this.everyAction(this.messageOrbits[this.currentOrbit], Action);
             this.everyAction(this.messageOrbits[this.currentOrbit], ()=>{
               Action();
             });
@@ -61,22 +44,14 @@ export function InitController(Laction){
       driver = window.setInterval;
       cancelDriver = window.clearInterval;
       Action = () => {
-        // 多轨道消息处理系统
-        /* for (_self.currentOrbit=0; _self.currentOrbit < _self.$settings.orbitNumber; _self.currentOrbit++) {
-          // 在不同间隔时间 取模调用对应轨道
-          if (_self.orbitCircle % (_self.currentOrbit+1) === 0)
-            _self.messageOrbits[_self.currentOrbit] = _self.everyAction(_self.messageOrbits[_self.currentOrbit] );
-        } */
-
         // 异步处理
-        if(this.currentOrbit++, this.currentOrbit<this.$settings.orbitNumber){
+        if(this.currentOrbit++, this.currentOrbit<this.messageOrbits.length){
         }else{
           this.currentOrbit = 0;
           return false;
         }
         
         if(this.orbitCircle % (this.currentOrbit+1) === 0){
-          // this.messageOrbits[this.currentOrbit] = this.everyAction(this.messageOrbits[this.currentOrbit], Action);
           this.everyAction(this.messageOrbits[this.currentOrbit], ()=>{
             Action();
           });

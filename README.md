@@ -1,5 +1,10 @@
 # Laction JS
 
+You can simplely view it as a period publish-subscription system with throttle and debounce support. 
+
+
+## Description.
+
 Laction js 是一个对分时任务进行节流和防抖控制的一个粗实现控制器。
 
 简单封装了一个使用定时器维护的任务队列，以较好的性能提供给同时大量的任务。
@@ -29,7 +34,7 @@ Laction js 是一个对分时任务进行节流和防抖控制的一个粗实现
 
 ### Efficient
 
-性能几乎接近setInterval，性能优良。
+速度几乎接近multi-setInterval/setTimeout, 性能优良。
 
 ### Flexible
 

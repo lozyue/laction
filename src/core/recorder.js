@@ -26,7 +26,7 @@ export function InitRecorder(Laction){
     },
     // 是否处理过两次（要结合isHappened一起判断） 检测防抖与否
     isTwice: function(msg){
-      return this._did_queue[msg] === 2;
+      return this._did_queue[msg] === 1;
     },
     // 口水方法
     reset: function(){
