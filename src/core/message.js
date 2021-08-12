@@ -28,7 +28,7 @@ export function InitMessage(Laction){
     else
       targetOrbit.push(message);
 
-    this.lactionLog(`[Laction]: bubbled msg: [${message}]`)
+    this.lactionLog(`[Laction]: bubbled msg: "${message}" to queue #${~~orbitID}`)
   }
 
   /**

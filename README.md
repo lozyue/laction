@@ -50,7 +50,76 @@ Laction js 是一个对分时任务进行节流和防抖控制的一个粗实现
 
 ## Options
 
-*// todo*
+| option      | 描述                                                                 | type    | default |
+| ----------- | -------------------------------------------------------------------- | ------- | ------- |
+| period | 基础轨道周期性执行的周期时间间隔  | Number(Int)  | 500      |
+| orbitNumber | 总计线性拓展不同执行周期的轨道数        | Number(Int) | 10    |
+| fixedPeriod | 决定内部实现使用`setTimeout`还是`setInterval`        | Boolean | true    |
+| debug | 是否开启调试模式. 这将会在控制台看到消息处理的所有过程   | Boolean | false  |
+
+
+## Usage
+
+#### Initialize (初始化)
+
+根据 options 生成一个`Laction`实例。
+```js
+// Instantiate 实例化
+const ins = new Laction({
+  fixedPeriod: false, // Interval model with less calculations.(potential tricky)
+  period: 50, // ms
+  orbitNumber: 5,
+  debug: true,
+});
+// Run 启动Laction
+ins.run();
+```
+
+如果需要停止Lactin运行
+
+```js
+ins.stop();
+```
+接下来冒泡的消息将被滞留在内部队列中，你可以再次调用 run 启动队列处理消息.
+
+#### Register a hook (注册消息钩子)
+
+注册消息钩子以供消息触发。
+
+```js
+ins.registerHook({
+  name: "msgTest",
+  once: true, // set period throttle
+  debounce: true, // set period debounce
+  actions: ()=>{
+    console.log("Message Actions are Invoked");
+  },
+});
+```
+
+#### Bubble the message (发送消息)
+
+通过发送消息来触发消息钩子。
+
+```js
+ins.bubble("msgTest"); 
+// a few millisecond later 
+// console >>> "Message Actions are Invoked"
+```
+
+根据配置的消息节流和防抖, 如果同时多次发送了消息,
+第一个周期只会触发一次(节流)，第二个周期会再触发一次(防抖):
+
+```js
+ins.bubble("msgTest");
+ins.bubble("msgTest");
+ins.bubble("msgTest");
+ins.bubble("msgTest");
+// a few milliseconds later 
+// console >>> "Message Actions are Invoked"
+// another few milliseconds later 
+// console >>> "Message Actions are Invoked"
+```
 
 
 ## APIS

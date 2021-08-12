@@ -11,7 +11,7 @@ export function addSnapshot(laction){
       preMsgLoop: false,
       postMsgLoop: true,
       actions: function(msgQueue, records, nums){
-        console.log(`%c Laction Snapshot %c ${this.currentOrbit} %o ${nums} %o`, "color: white; background: #e9546b; padding:1px 0;border-radius:2px 0 0 2px", "box-shadow:1px 1px 1px #e9546b;", '→', records);
+        console.log(`%c Laction Snapshot %c ${this.currentPeriod} %o ${nums} %o`, "color: white; background: #e9546b; padding:1px 0;border-radius:2px 0 0 2px", "box-shadow:1px 1px 1px #e9546b;", '→', records);
       },
     });
     // lactionIns.rootHookKeys.push("snapshot");

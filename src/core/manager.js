@@ -1,4 +1,4 @@
-import { arbitraryFree, is_String, is_Array } from "../utils/utils";
+import { arbitraryFree, is_String, is_Array, arbitraryWrap } from "../utils/utils";
 import { KERNEL, ROOT, PRECEDENCE, NORMAL, } from '../utils/const';
 
 export function InitManager(Laction){
@@ -13,7 +13,7 @@ export function InitManager(Laction){
    */
   Laction.prototype.registerHook = function (...hooks) {
     const iteratAdd = (proper)=>{
-      if(!proper.name || !proper.actions){
+      if(!proper.name || !(proper.actions|| proper.action)){
         console.warn("[Laction]: The property 'name'and the 'actions' for hook register is essential!");
         return false;
       }
@@ -24,7 +24,8 @@ export function InitManager(Laction){
         debounce: proper.debounce || false, // 周期防抖.
         preMsgLoop: proper.preMsgLoop,
         postMsgLoop: proper.postMsgLoop,
-        actions: is_Array(proper.actions) ? proper.actions : [proper.actions], // hookAction or hookActions自动结构
+        // support single action type.
+        actions: arbitraryWrap(proper.action, proper.actions), // hookAction or hookActions自动结构
       }
     };
     if(hooks.length === 1){
