@@ -1,5 +1,5 @@
 'use strict';
-import * as _CONST from '../utils/const.js';
+import * as _CONST from '../utils/const.ts';
 
 export function addSnapshot(laction){
   laction.mixin(function(_self){
@@ -7,11 +7,18 @@ export function addSnapshot(laction){
     _self.registerHook({
       name: "_snapshot",
       level: _CONST.ROOT,
-      once: true,
+      once: true, // This option takes no effection cause there is no record of the preMsgLoop/postMsgLoop hook.
+      debounce: false, // Has no effection either.
       preMsgLoop: false,
       postMsgLoop: true,
-      actions: function(msgQueue, records, nums){
-        console.log(`%c Laction Snapshot %c ${this.currentPeriod} %o ${nums} %o`, "color: white; background: #e9546b; padding:1px 0;border-radius:2px 0 0 2px", "box-shadow:1px 1px 1px #e9546b;", '→', records);
+      actions: function(msgQueue, {orbitID, records, msgNum}){
+        console.log(
+          `%c Laction Snapshot %c ${orbitID} %o ${msgNum} %o`, 
+          "color: white; background: #e9546b; padding:1px 0;border-radius:2px 0 0 2px", 
+          "box-shadow:1px 1px 1px #e9546b;", 
+          '→', 
+          records,
+        );
       },
     });
     // lactionIns.rootHookKeys.push("snapshot");

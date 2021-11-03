@@ -19,6 +19,10 @@ const ROOT = 1; // 根级钩子，受到removeHook保护
 const PRECEDENCE = 2; // 提升precedence(优先n.)钩子
 const NORMAL = 3; // 普通钩子
 
+export const PrimeNumber = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41]; // 2^53-1
+export const MinOribtsLen = 1; 
+export const MaxOrbitsLen = 40;
+
 export {
   DEBUG, INFOR,
   KERNEL, ROOT, PRECEDENCE, NORMAL,

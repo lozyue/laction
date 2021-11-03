@@ -18,7 +18,7 @@ export function initGrandInterval(laction){
     this.multiple = ~~multiple; // 这样也保证multiple不会是一个超过2^32次方的数 同时自动处理 NaN 值转化为0
     this.base_orbitID = base_orbitID;
     if(!_parent.messageOrbits[this.base_orbitID] || !this.multiple) return 0;
-    this.counter = 0; // 倍率计数器
+    this.count = 0; // 倍率计数器
     this.assignments = []; // 执行队列
     this.messageKey = `GI_${this.base_orbitID}_${this.multiple}`; // 消息key(内置)
 
@@ -29,8 +29,8 @@ export function initGrandInterval(laction){
         rootHook: true,
         once: true,
         actions: [()=>{
-          _this.counter = ++_this.counter % this.multiple;
-          if(_this.counter===0) _this.assignments.forEach((assign)=>{assign.call(assign)});
+          _this.count = ++_this.count % this.multiple;
+          if(_this.count===0) _this.assignments.forEach((assign)=>{assign.call(assign)});
           _parent.messageOrbits[this.base_orbitID].push(_this.messageKey); // 消息循环
         }],
       }]);

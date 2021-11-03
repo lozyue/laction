@@ -24,8 +24,17 @@ var prodConfig = {
   module: {
     strictExportPresence: true,
     rules: [
+      // ts-loader
       {
-        test: /\.[jt]s$/,
+        test: /.ts$/,
+        use: [{
+          loader: 'ts-loader',
+          options: {},
+        }],
+        exclude: /node_modules/,
+      },
+      {
+        test: /\.js$/,
         use: [
           // babel-loader,
           // 对象方式进行设置

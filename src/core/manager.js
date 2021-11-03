@@ -1,4 +1,4 @@
-import { arbitraryFree, is_String, is_Array, arbitraryWrap } from "../utils/utils";
+import { arbitraryFree, is_String, is_Array, arbitraryWrap, removeArrayItem, deepSupplement } from "../utils/utils";
 import { KERNEL, ROOT, PRECEDENCE, NORMAL, } from '../utils/const';
 
 export function InitManager(Laction){
@@ -18,15 +18,17 @@ export function InitManager(Laction){
         return false;
       }
       // override if existed.
-      this.hooks[proper.name] = {
-        level: proper.level || NORMAL, // 钩子等级
-        once: proper.once, // 周期节流
-        debounce: proper.debounce || false, // 周期防抖.
-        preMsgLoop: proper.preMsgLoop,
-        postMsgLoop: proper.postMsgLoop,
-        // support single action type.
-        actions: arbitraryWrap(proper.action, proper.actions), // hookAction or hookActions自动结构
-      }
+      this.hooks[proper.name] = deepSupplement(proper, {
+        level: NORMAL, // 钩子等级
+        once: false, // 周期节流
+        debounce: false, // 周期防抖.
+        loop: false, // 是否循环调用，继函数内嵌外的内部解决方案.
+        preMsgLoop: false,
+        postMsgLoop: false,
+      });
+      // support single action type.
+      // hookAction or hookActions自动结构
+      this.hooks[proper.name].actions = arbitraryWrap(proper.action, proper.actions);
     };
     if(hooks.length === 1){
       arbitraryFree(hooks[0], iteratAdd);
@@ -49,7 +51,7 @@ export function InitManager(Laction){
     const test = this.hooks[hookName];
     if(!test) return false;
 
-    this.lactionLog(`[Laction]: Added an action into ${hookName}`, hookActions);
+    this.lactionLog(`Added an action into ${hookName}`, hookActions);
     test.actions = test.actions.concat(hookActions);
     return true;
   };
@@ -69,7 +71,7 @@ export function InitManager(Laction){
     if(find>-1){
       test.actions.splice(find,1);
     }
-    this.lactionLog(`[Laction]: Removed an action in ${hookName}`, handle);
+    this.lactionLog(`Removed an action in ${hookName}`, handle);
     return true;
   }
 
@@ -87,10 +89,11 @@ export function InitManager(Laction){
       // default by register handle
       else{
         const hookList = Object.values(this.hooks);
-        hookList.indexOf(item)
+        removeArrayItem(hookList, item);
       }
     });
   }
+
   /**
    * 删除对应Hook的注册; 
    * 删除成功返回true. 支持批量删除(传递对应数组即可).
