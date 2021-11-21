@@ -1,6 +1,6 @@
 {
   "name": "laction",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "description": "A rough controller for throttle and debounce with action dispatcher. And can also be used for save some Intervals. ",
   "main": "src/index.js",
   "scripts": {

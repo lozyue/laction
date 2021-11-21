@@ -1,4 +1,4 @@
-import { arbitraryFree, is_String, is_Array, arbitraryWrap, removeArrayItem, deepSupplement } from "../utils/utils";
+import { arbitraryFree, is_String, is_Array, arbitraryWrap, removeArrayItem, deepSupplement, is_Defined } from "../utils/utils";
 import { KERNEL, ROOT, PRECEDENCE, NORMAL, } from '../utils/const';
 
 export function InitManager(Laction){
@@ -28,7 +28,7 @@ export function InitManager(Laction){
       });
       // support single action type.
       // hookAction or hookActions自动结构
-      this.hooks[proper.name].actions = arbitraryWrap(proper.action, proper.actions);
+      this.hooks[proper.name].actions = arbitraryWrap(proper.actions, proper.action);
     };
     if(hooks.length === 1){
       arbitraryFree(hooks[0], iteratAdd);
@@ -38,6 +38,29 @@ export function InitManager(Laction){
       });
     return true;
   };
+
+  /**
+   * Test if the hookName is used or find a proper hookName.
+   * @param { Boolean } postfix When set this on, the returns will be a unregister root String
+   *  by add number postfix if it has conflict originally.
+   */
+  Laction.prototype.testHookName = function (root: string, postfix = false) {
+    if(is_Defined(this.hooks[root]) ){
+      if(!postfix) return true;
+      else{
+        // Find by add Number postfix.
+        let i = 0, temp ='';
+        while(i++ < 2e16){ // That's enough.
+          temp = root + i;
+          if(!is_Defined(this.hooks[temp]) )
+            return temp;
+        };
+      }
+    }else{
+      if(postfix) return root;
+      return false;
+    }
+  }
 
   /**
    * 向已有消息钩子中增加动作 [an Action]. 会预检查钩子存在
@@ -93,52 +116,4 @@ export function InitManager(Laction){
       }
     });
   }
-
-  /**
-   * 删除对应Hook的注册; 
-   * 删除成功返回true. 支持批量删除(传递对应数组即可).
-   * @param {String} msgKey 
-   * @param {Object} options => {all:Boolean, keys:Array=>[String,...], except:[String,...]} 
-   */
-  /* Laction.prototype.removeHook = function (msgKey, { ...options } = null) {
-    // let test = -1;
-    let result = true && this.hooks[msgKey];
-    if (options) {
-      let inAdditionTo = options.except || options.exclude;
-      // 选择式清空（多选可删根级钩子）
-      if (options.keys) {
-        for (let i in this.hooks) {
-          if (options.keys.indexOf(i) > -1 && i.level >= _CONST.ROOT){
-            result = result && delete this.hooks[i];
-          }
-        }
-        return result;
-      } 
-      // 保留式清空(不可删除根级钩子)
-      else if (inAdditionTo) {
-        for (let i in this.hooks) {
-          // 允许数组和字符串, 默认排除根级钩子
-          if (inAdditionTo.indexOf(i) > -1);
-          else if(i.level > _CONST.ROOT){ // 在undefined、null、NaN等情况下均可信，仅类整型字符串不可信
-            result = result && delete this.hooks[i];
-          }
-        }
-        return result;
-      // 全部清空, 不包括_CONST.ROOT钩子
-      } else if (options.all) {
-        for (let i in this.hooks){
-          if(i.level > _CONST.ROOT){
-            result = result && delete this.hooks[i];
-          }
-        }
-        return result;
-      }else {
-        console.warn(`[ActionQueue]: invalid options! Should set property "except"or"keys"or"all".Set Null to Disable`);
-      }
-    }
-
-    // 删除钩子
-    return result && this.hooks[msgKey].level>=_CONST.ROOT && delete this.hooks[msgKey];
-  } */
-
 }

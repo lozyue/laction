@@ -78,6 +78,9 @@ var devConfig = {
   devServer: {
     compress: true,
     contentBase: resolve(__dirname, '..', 'doc/demo'),
+    watchContentBase: true,
+    liveReload: true,
+    injectClient: false,
     clientLogLevel: 'none',
     quiet: false,
     port: 8090,

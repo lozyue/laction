@@ -23,23 +23,19 @@ export function InitMessage(Laction){
     if(orbitID<0) orbitID += OrbitLenMax;
     // Below diff mode the orbitID should be an positive Integer.
     if(diff){
-      const gap = (this.counter+1)% orbitID;
+      const gap = (this.counter)% (orbitID + 1);
       // DEBUG && console.info(orbitID,  gap, this.counter, this.MaxPeriodCounter);
       
-      if(orbitID + gap < OrbitLenMax){
-        orbitID = orbitID + gap;
-        // continue
-      } else {
-        // through indirect way by wrap the message.
-        const rawMessage = message;
-        message = ()=>{
-          let repeat = gap;
-          const controller = ()=>{
-            if(--repeat=== 0) return rawMessage;
-            else return controller;
-          }
-          this.messageOrbits[0].push(controller);
+      // repeat the counter to control the message.
+      const rawMessage = message;
+      message = ()=>{
+        let repeat = gap;
+        const controller = ()=>{
+          if(repeat-- === 0) return rawMessage;
+          else return controller;
         }
+        // Jump to orbit #0
+        this.messageOrbits[0].push(controller);
       }
     }
     // check and filter the param.
@@ -103,17 +99,17 @@ export function InitMessage(Laction){
    * @param {Function} rule
    * @param {Prototype Object} types // 可传递多个参数，指定规定原型内的消息进行删除
    */
-  Laction.prototype.revoke = function(orbit = -1, rule=(msg)=>(!msg), ...types){
-    if(types.length===0) types = [String, Array];
+  Laction.prototype.revoke = function(orbitID = -1, rule=(msg)=>(!msg), ...types){
+    types = [String, Array, Function, ...types];
     // 清除指定轨道
-    if(orbit>-1){
-      this.messageOrbits[orbit] = this.messageOrbits[orbit].filter((msg)=>{
-        return rule(msg) && types.indexOf(msg.constructor)>-1;
+    if(orbitID>-1){
+      this.messageOrbits[orbitID] = this.messageOrbits[orbitID].filter((msg)=>{
+        return rule(msg) && msg.constructor && types.indexOf(msg.constructor)>-1;
       });
     } else {
       this.messageOrbits.forEach((orbit, index, arr)=>{
-        this.messageOrbits[orbit] = orbit.filter(msg=>{
-          return rule(msg) && types.indexOf(msg.constructor) > -1;
+        arr[index] = orbit.filter(msg=>{
+          return rule(msg) && msg.constructor && types.indexOf(msg.constructor) > -1;
         });
       });
     }

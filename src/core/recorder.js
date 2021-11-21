@@ -28,7 +28,6 @@ export function InitRecorder(Laction){
     isTwice: function(msg){
       return this._did_queue[msg] === 1;
     },
-    // 口水方法
     reset: function(){
       this._did_queue = {};
       return true;
